@@ -1,0 +1,23 @@
+{
+  "skill_name": "design-guardian",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我要实现一个新功能：在工作空间里，用户可以给文档打标签，然后通过标签来筛选和搜索文档。标签可以自定义创建，一个文档可以有多个标签。你帮我评估下这个需求。",
+      "expected_output": "Phase 1 需求评审：检查变更放大（影响哪些模块）、战术vs战略（最小化版本）、问题分解（可独立解决的子问题）",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我打算新增一个 FileManagerService 来统一管理文件的上传、下载、删除、重命名，现在的逻辑散落在 StorageService、DocumentService、PublicService 三个地方。这套接口你帮我看下：upload(file, workspaceId, userId), download(fileId), delete(fileId), rename(fileId, newName), getUrl(fileId), listFiles(workspaceId, pagination)。",
+      "expected_output": "Phase 2 方案设计：深模块检查（接口vs功能）、信息隐藏（是否暴露内部实现）、不同层不同抽象（Service 层是否增值）、在一起更好还是分开（合并是否合理）",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "帮我审查下这段代码:\n\n```typescript\n@Injectable()\nexport class NotificationService {\n  constructor(\n    @InjectRepository(User) private userRepo: Repository<User>,\n    @InjectRepository(Workspace) private wsRepo: Repository<Workspace>,\n  ) {}\n\n  async process(data: any): Promise<any> {\n    const result = await this.wsRepo.findOne({ where: { id: data.wsId } });\n    if (!result) throw new Error('not found');\n    \n    for (const item of data.items) {\n      const user = await this.userRepo.findOne({ where: { id: item.uid } });\n      if (user) {\n        item.email = user.email;\n        item.name = user.nickname;\n      }\n      item.processed = true;\n      item.timestamp = new Date();\n    }\n    \n    return data;\n  }\n}\n```",
+      "expected_output": "Phase 4 Code Review：any 类型问题、N+1 查询、命名模糊(process/data/result/item)、函数职责不单一、错误处理不统一",
+      "files": []
+    }
+  ]
+}
